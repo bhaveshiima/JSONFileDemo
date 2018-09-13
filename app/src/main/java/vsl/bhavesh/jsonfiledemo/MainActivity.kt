@@ -16,10 +16,23 @@ class MainActivity : AppCompatActivity() {
 
         // Insert OnClick  [ START ]
         insert.setOnClickListener {
-          // Create object foe employee class
 
-            var list = mutableListOf<Employee>()
+            var fis = openFileInput("employees.json") // if file already avaliable
+            var g = Gson()
+            var emps:Employees? = null
+            //var list:MutableList<Employees>? = null
 
+            var list:MutableList<Employee>? = null
+            // check if file has any data
+            if(fis.available() > 0){
+
+                var reader = InputStreamReader(fis)
+                var emps = g.fromJson(reader,Employees::class.java)
+                list = emps.employees
+            }else{
+                // Create object foe employee class
+                list  = mutableListOf<Employee>()
+            }
             // take the input value
             var et1Val = et1.text.toString().toInt()
             var et2Val = et2.text.toString()
@@ -31,10 +44,13 @@ class MainActivity : AppCompatActivity() {
             // Add individual employee object into list
             list.add(e)  // list is point to Array
 
-            var emps = Employees(list)  // this point to main object to Employees
+            emps = Employees(list)  // this point to main object to Employees
+
+
+
 
             //Convert Object format to JSON using toJSON  - add 3rd party library
-            var g = Gson()
+            //var g = Gson()
             var json_response = g.toJson(emps) //return is string format
             // Now this response we will write on file
 
